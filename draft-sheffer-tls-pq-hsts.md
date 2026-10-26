@@ -78,9 +78,8 @@ This document defines an HTTP response header field, `Require-PQ-Auth`,
 modeled on HTTP Strict Transport Security (HSTS) {{?RFC6797}} but
 carried separately with its own sticky client state as a Structured
 Fields Dictionary {{!RFC9651}}. When a user agent has noted that policy
-for a host, it MUST authenticate using a cryptographically relevant
-quantum computer (CRQC)-resistant trust anchor and MUST negotiate
-CRQC-resistant (pure post-quantum or hybrid) key agreement. The header
+for a host, it MUST authenticate using a quantum-resistant trust anchor and
+MUST negotiate quantum-resistant key agreement. The header
 is a near-term, origin-opt-in lever for dual-trust-store PKI migration
 and is intended to become unnecessary once classical trust anchors are
 retired.
@@ -93,7 +92,7 @@ retired.
 Migrating TLS authentication to post-quantum cryptography cannot be done
 by flipping a single switch. For a long period, relying parties will keep
 classical trust anchors in their trust stores alongside
-CRQC-resistant ones, and
+quantum-resistant ones, and
 many origins will still present only
 classical credentials. Under active attack, what matters is not whether
 a server can present a post-quantum credential, but whether the client
@@ -111,7 +110,7 @@ later" threat model. Once an origin has asserted a post-quantum posture
 via the mechanism in this document, however, allowing a later
 classical-only key agreement would re-open a confidentiality downgrade
 for that host. Therefore, when `Require-PQ-Auth` is enforced, this
-document also requires CRQC-resistant key agreement for that host.
+document also requires quantum-resistant key agreement for that host.
 
 This document defines an HTTP response header field, `Require-PQ-Auth`,
 with HSTS-like semantics but carried separately from
@@ -131,8 +130,8 @@ this document ignore the unknown header field.
 The normative contribution of this document is the near-term opt-in
 `Require-PQ-Auth` pin and the associated user-agent behavior. Where this
 document uses "PQ" in the title and abbreviation (PQ-HSTS), the
-normative requirement is CRQC-resistant trust-anchor authentication and
-CRQC-resistant key agreement as defined below—not a single algorithm.
+normative requirement is quantum-resistant trust-anchor authentication and
+quantum-resistant key agreement as defined below—not a single algorithm.
 The informal name reflects HSTS-like behavior, not an extension of the
 `Strict-Transport-Security` header field.
 
@@ -146,7 +145,7 @@ post-quantum posture.
 The harder problem is coordinating a three-sided ecosystem of clients,
 servers, and certificate authorities (or other trust-anchor operators)
 from today's set of acceptable authentication algorithms to a
-CRQC-resistant set on a compressed timeline
+quantum-resistant set on a compressed timeline
 {{RescorlaPQEmergency}}.
 <cref>TODO: add references to government/industry post-quantum migration
 directives.</cref>
@@ -163,7 +162,7 @@ in classical certificates, specified elsewhere) can unlock a strict client polic
 {{?I-D.sheffer-tls-pqc-continuity}} defines a TLS-layer commitment that a
 server will present a PQC or composite end-entity certificate for a period
 of time. This document instead defines an HTTP sticky policy that pins
-CRQC-resistant trust anchors (and key agreement when the pin is enforced).
+quantum-resistant trust anchors (and key agreement when the pin is enforced).
 The two approaches address related downgrade problems at different layers.
 
 Physically large post-quantum certificates motivate new certificate
@@ -177,12 +176,12 @@ depending on a single encoding.
   encoding. The migration stages in {{migration}} are written primarily
   for this ecosystem.
 - Enterprise PKI may use X.509 post-quantum certificate chains (pure PQ
-  and/or composite under CRQC-resistant trust anchors) rather than MTC.
+  and/or composite under quantum-resistant trust anchors) rather than MTC.
   Enterprises set their own migration timelines; this document neither
   drives nor constrains them. The `Require-PQ-Auth` mechanism remains
   available where an enterprise origin and its clients choose to use it.
 
-Both forms of CRQC-resistant trust anchor can satisfy `Require-PQ-Auth`.
+Both forms of quantum-resistant trust anchor can satisfy `Require-PQ-Auth`.
 
 
 # Conventions and Definitions
@@ -193,23 +192,23 @@ The following terms are used in this document:
 
 classical:
 : Cryptography or credentials that are not designed to remain secure
-  against a CRQC (for example, RSA or elliptic-curve public-key algorithms
-  in wide use on the Web today). A classical trust anchor is a trust
+  against a cryptographically-relevant quantum computer (CQRC), such as RSA
+  or elliptic-curve public-key algorithms. A classical trust anchor is a trust
   anchor that authenticates only classical paths.
 
-CRQC-resistant (signatures / trust anchors):
+quantum-resistant (signatures / trust anchors):
 : Not classical-only. For authentication material, this document treats
   pure post-quantum algorithms and composite algorithms
   {{?I-D.ietf-lamps-pq-composite-sigs}} as one class, consistent with the
   PQC end-entity classification in
   {{?I-D.sheffer-tls-pqc-continuity}}. Which algorithms a UA accepts as
-  CRQC-resistant is a matter of local policy and the relevant algorithm
+  quantum-resistant is a matter of local policy and the relevant algorithm
   specifications;
   this document states the property, not a closed algorithm list.
 
-<cref>TODO: add a more precise definition of CRQC-resistance for MTC.</cref>
+<cref>TODO: add a more precise definition of quantum-resistance for MTC.</cref>
 
-CRQC-resistant (key agreement):
+quantum-resistant (key agreement):
 : Not classical-only. Hybrid key agreement (classical combined with a
   post-quantum KEM) and pure post-quantum key agreement both satisfy
   this document. Exact NamedGroup / codepoint acceptance is left to UA
@@ -221,7 +220,7 @@ trust anchor:
   {{?RFC5280}} or an MTC trust base / cosigner trust as defined by
   {{?I-D.ietf-plants-merkle-tree-certs}}. Normative requirements in this
   document refer to the class of trust anchor (classical vs
-  CRQC-resistant), not to a single encoding.
+  quantum-resistant), not to a single encoding.
 
 HSTS terms:
 : This document refers to Known HSTS Host, HSTS Policy, and related
@@ -319,10 +318,10 @@ Servers MUST emit `Require-PQ-Auth` only when they can keep the following
 commitment for the lifetime conveyed by `max-age` (and for any hosts
 covered by `include-subdomains`):
 
-1. Serve a certification path anchored at a CRQC-resistant trust anchor
+1. Serve a certification path anchored at a quantum-resistant trust anchor
    (pure post-quantum or composite per the server's deployment), with no
-   mixed classical/CRQC-resistant path; and
-2. Complete CRQC-resistant key agreement (hybrid or pure post-quantum)
+   mixed classical/quantum-resistant path; and
+2. Complete quantum-resistant key agreement (hybrid or pure post-quantum)
    with clients that implement this document.
 
 The commitment applies to every server that answers for each covered
@@ -406,13 +405,13 @@ A connection meets the checks of this section when all of the following
 hold. These checks apply to the connection itself. They do not depend on
 a PQ Policy already being Noted.
 
-1. The trust anchor that caused acceptance is CRQC-resistant (pure
+1. The trust anchor that caused acceptance is quantum-resistant (pure
    post-quantum or composite per local policy), whether that trust anchor
    is an X.509 trust anchor or an MTC trust base / cosigner.
-2. The accepted certification path is entirely CRQC-resistant: no hop is
+2. The accepted certification path is entirely quantum-resistant: no hop is
    classical. (Detailed mixed-path rejection may be refined here or by
    reference to a dedicated path-validation document.)
-3. The negotiated key agreement is CRQC-resistant (hybrid or pure
+3. The negotiated key agreement is quantum-resistant (hybrid or pure
    post-quantum per local policy).
 
 ## Enforcement {#enforcement}
@@ -450,7 +449,7 @@ treated as already Noted Known PQ Hosts (with optional
 HSTS today; the `preload` Dictionary member signals submission intent for
 a PQ preload list and is independent of HSTS `preload`; informative
 submission expectations (evidence of `Require-PQ-Auth`,
-CRQC-resistant-TA serving, PQ/hybrid KE). Do not prescribe one shared
+quantum-resistant-TA serving, PQ/hybrid KE). Do not prescribe one shared
 list vs a parallel list (implementation/operations detail). Stage 6: UAs
 MAY drop preloaded PQ enforcement when the pin is obsolete.</cref>
 
@@ -473,16 +472,16 @@ to `Require-PQ-Auth`. This section covers where they differ.
 
 ## Underlying Secure Transport Considerations
 
-CRQC-resistant key exchange and authentication are specified for TLS
+Quantum-resistant key exchange and authentication are specified for TLS
 1.3 {{!RFC9846}} and not for earlier versions. `Require-PQ-Auth` can
 therefore be used only with TLS 1.3 or later.
 
 ## Non-Conformant User Agent Implications
 
 UAs that do not implement this document ignore the header field. If
-such a UA accepts both classical and CRQC-resistant authentication, a
-CRQC attacker can present a forged classical certificate even when
-the server offers a CRQC-resistant one.
+such a UA accepts both classical and quantum-resistant authentication, a
+quantum attacker can present a forged classical certificate even when
+the server offers a quantum-resistant one.
 
 ## Bootstrap Vulnerability
 
@@ -743,14 +742,14 @@ infrastructure, expected for the public Web to center on MTC.
 | Role | State |
 |---|---|
 | CA | Classical Web PKI trust anchors are removed from relying-party trust stores. Plain classical issuance is gone. |
-| Server | Serve CRQC-resistant credentials. Residual classical-with-PQ-signal credentials may linger only while last classical-only verifiers remain (deployment-dependent). |
-| Client | Successful authentication uses CRQC-resistant trust anchors. Classical credentials without PQ assurance are rejected. |
+| Server | Serve quantum-resistant credentials. Residual classical-with-PQ-signal credentials may linger only while last classical-only verifiers remain (deployment-dependent). |
+| Client | Successful authentication uses quantum-resistant trust anchors. Classical credentials without PQ assurance are rejected. |
 
 ### Stage 6 — Retire `Require-PQ-Auth`
 
 | Role | State |
 |---|---|
-| CA | CRQC-resistant-only trust for the Web PKI. |
+| CA | Quantum-resistant-only trust for the Web PKI. |
 | Server | Stop sending `Require-PQ-Auth`; HSTS may remain. |
 | Client | Clear `Require-PQ-Auth` state (including preload) and eventually remove enforcement; the pin is redundant. The mechanism succeeds by becoming unnecessary. |
 
