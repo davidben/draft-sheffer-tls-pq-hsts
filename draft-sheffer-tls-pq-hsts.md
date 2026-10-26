@@ -1,6 +1,6 @@
 ---
-title: "An HSTS-like Header for Secure PQ Migration"
-abbrev: "PQ-HSTS"
+title: "HTTP Post-Quantum Authentication Policy"
+abbrev: "HTTP PQ Auth Policy"
 category: std
 
 docname: draft-sheffer-tls-pq-hsts-latest
