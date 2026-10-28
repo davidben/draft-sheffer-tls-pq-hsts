@@ -753,6 +753,14 @@ infrastructure, expected for the public Web to center on MTC.
 | Server | Stop sending `Require-PQ-Auth`; HSTS may remain. |
 | Client | Clear `Require-PQ-Auth` state (including preload) and eventually remove enforcement; the pin is redundant. The mechanism succeeds by becoming unnecessary. |
 
+# Document History
+
+RFC Editor: please remove before publication.
+
+## draft-sheffer-tls-pq-hsts-00
+
+Initial version.
+
 # Acknowledgments
 {:numbered="false"}
 
